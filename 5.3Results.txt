@@ -1,0 +1,6 @@
+1 Thread, large n:
+	Interval: 1 -> 10000, 1,000,000,000 trapezoids
+	16.347081s
+2 Threads, large n:
+	Interval: 1 -> 10000, 1,000,000,000 trapezoids
+	8.804500s

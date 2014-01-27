@@ -1,0 +1,7 @@
+Name 4 OpenMP Counting Sort
+Due Date Tuesday, February 11, 2014 11:59:00 PM PST
+Points Possible 10
+
+Submit the solutions to exercise 5.3 p. 268 in PACHECO-11.
+
+For any code you submit, there should be at least 5 unit tests included with at least one test comparing serial and parallel output.

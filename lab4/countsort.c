@@ -31,10 +31,6 @@ int main(int argc, char *argv[])
     fTime = omp_get_wtime() - iTime;
     //for(i = 0; i<ARR_SIZE; i++) printf("%d, ", arr[i]);
     printf("Time to sort in Serial: %f\n", fTime);
-
-
-
-
     return 0;
 }
 

@@ -3,8 +3,8 @@
 #include <omp.h>
 #include <time.h>
 
-#define DEF_THR_NUM 4
-
+#define DEF_THR_NUM 8
+double randRange();
 double montecarlo(int iterations, int thread_count);
 int main(int argc, char *argv[])
 {
@@ -16,15 +16,15 @@ int main(int argc, char *argv[])
      
     int iterations = atoi(argv[1]);
 
-    //float iTime_par = omp_get_wtime();
+    float iTime_par = omp_get_wtime();
     double pi_est_par = montecarlo(iterations, DEF_THR_NUM);
-    //float fTime_par = omp_get_wtime() - iTime_par;
-    printf("Parallel estimate for Pi: %f\n\n", pi_est_par);
+    float fTime_par = omp_get_wtime() - iTime_par;
+    printf("Parallel estimate for Pi: %f\nTime to compute: %f\n", pi_est_par, fTime_par);
 
-    //float iTime_ser = omp_get_wtime();
+    float iTime_ser = omp_get_wtime();
     double pi_est_ser = montecarlo(iterations, 1);
-    //float fTime_ser = omp_get_wtime() - iTime_ser;
-    printf("Serial estimate for Pi: %f\n\n", pi_est_ser);
+    float fTime_ser = omp_get_wtime() - iTime_ser;
+    printf("Serial estimate for Pi: %f\nTime to compute: %f\n\n", pi_est_ser, fTime_ser);
     
     double test_1 = montecarlo(1000, DEF_THR_NUM);
     printf("1000 iterations, Pi = %f\n\n", test_1);
@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
 double montecarlo(int iterations, int thread_count)
 {
     unsigned long long int num_in_circle = 0;
@@ -46,17 +47,28 @@ double montecarlo(int iterations, int thread_count)
     int i;
     double x,y,dist_sq;
 
-    float iTime = omp_get_wtime();
-    #pragma omp parallel for num_threads(thread_count) reduction(+:num_in_circle) private(x,y,dist_sq)
+    //float iTime = omp_get_wtime();
+    #pragma omp parallel for reduction(+:num_in_circle) num_threads(thread_count)
     for(i = 0; i < iterations; i++)
     {
-        x = (double)rand()/(double)RAND_MAX;
-        y = (double)rand()/(double)RAND_MAX;
-        dist_sq = (x*x)+(y*y);
-        if(dist_sq <= 1) num_in_circle += 1;
+        double x = (double)rand()/(double)RAND_MAX;
+        double y = (double)rand()/(double)RAND_MAX;
+        
+        //double x = randRange();
+        //double y = randRange();
+        double dist_sq = (x*x)+(y*y);
+        if(dist_sq <= 1) 
+            num_in_circle++;;
     }
     double pi_est = (4*((double)num_in_circle))/((double)iterations); 
-    float fTime = omp_get_wtime() - iTime;
-    printf("Time to run: %f\n", fTime);
+    //float fTime = omp_get_wtime() - iTime;
+    //printf("Time to run: %f\n", fTime);
     return pi_est;
+}
+
+double randRange()
+{
+    double range = (-1.0 - 1.0);
+    double div = RAND_MAX / range;
+    return (-1.0) + (rand() / div);
 }

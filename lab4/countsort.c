@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
     float iTime = omp_get_wtime();
     countsort(&arr, ARR_SIZE);
     float fTime = omp_get_wtime() - iTime;
-    //for(i = 0; i<ARR_SIZE; i++) printf("%d, ", arr[i]);
     printf("Time to sort in Parallel: %f\n", fTime);
     
     #pragma omp parallel for num_threads(NUM_THR)
@@ -29,8 +28,51 @@ int main(int argc, char *argv[])
     iTime = omp_get_wtime();
     countsort(&arr, ARR_SIZE, 1);
     fTime = omp_get_wtime() - iTime;
-    //for(i = 0; i<ARR_SIZE; i++) printf("%d, ", arr[i]);
     printf("Time to sort in Serial: %f\n", fTime);
+    
+    printf("\nTest 1:\nUnsorted random array: [");
+    for(i = 0;i < 5; i++){
+        arr[i] = rand()%5;
+        printf("%d, ", arr[i]);
+    }
+    countsort(&arr, 5, NUM_THR);
+    printf("]\nSorted array: [");
+    for(i = 0; i < 5; i++)
+        printf("%d, ", arr[i]);
+    printf("]\n");
+
+    printf("\nTest 2:\nUnsorted random array: [");
+    for(i = 0;i < 10; i++){
+        arr[i] = rand()%10;
+        printf("%d, ", arr[i]);
+    }
+    countsort(&arr, 10, NUM_THR);
+    printf("]\nSorted array: [");
+    for(i = 0; i < 10; i++)
+        printf("%d, ", arr[i]);
+    printf("]\n");
+
+    printf("\nTest 3:\nUnsorted random array: [");
+    for(i = 0;i < 15; i++){
+        arr[i] = rand()%15;
+        printf("%d, ", arr[i]);
+    }
+    countsort(&arr, 15, NUM_THR);
+    printf("]\nSorted array: [");
+    for(i = 0; i < 15; i++)
+        printf("%d, ", arr[i]);
+    printf("]\n");
+
+    printf("\nTest 4:\nUnsorted random array: [");
+    for(i = 0;i < 20; i++){
+        arr[i] = rand()%20;
+        printf("%d, ", arr[i]);
+    }
+    countsort(&arr, 20, NUM_THR);
+    printf("]\nSorted array: [");
+    for(i = 0; i < 20; i++)
+        printf("%d, ", arr[i]);
+    printf("]\n");
     return 0;
 }
 

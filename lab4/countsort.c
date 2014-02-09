@@ -6,6 +6,7 @@
 #define NUM_THR 32
 
 void countsort();
+int compare_ints();
 int main(int argc, char *argv[])
 {
     int i;
@@ -30,6 +31,16 @@ int main(int argc, char *argv[])
     fTime = omp_get_wtime() - iTime;
     printf("Time to sort in Serial: %f\n", fTime);
     
+    #pragma omp parallel for num_threads(NUM_THR)
+    for(i = 0;i < ARR_SIZE; i++)
+        arr[i] = rand()%ARR_SIZE;
+    
+    iTime = omp_get_wtime();
+    qsort(&arr, ARR_SIZE, sizeof(int), compare_ints);
+    fTime = omp_get_wtime() - iTime;
+    printf("Time to sort in qsort: %f\n", fTime);
+
+
     printf("\nTest 1:\nUnsorted random array: [");
     for(i = 0;i < 5; i++){
         arr[i] = rand()%5;
@@ -102,4 +113,11 @@ void countsort(int a[], int n, int num_thr)
     for(i = 0; i<n; i++)
         memcpy(&a[i], &tmp[i], sizeof(int));
     free(tmp);
+}
+
+int compare_ints(const void* a, const void* b)
+{
+    const int *arg1 = a;
+    const int *arg2 = b;            
+    return *arg1 - *arg2;
 }

@@ -1,0 +1,14 @@
+5.3)
+a) The 'j' variable should be private because each thread needs to do 1->j iterations on its value of 'i'.
+
+b) Each loop must keep track of its own number of equal values, and then use a reduction to sum them all at the end.
+
+c) Yes we can. Simply put the call to memcpy in a for loop(copy each array index instead of the block of memory) and
+then use the OMP parallel for to call it.
+
+d) See included code
+
+e) Our parallel implementation is far faster than the serial, about 6x, but qsort is even faster than the parallel, about 32x faster.
+Time to sort in Parallel: 0.101709
+Time to sort in Serial: 0.593706
+Time to sort in qsort: 0.003215

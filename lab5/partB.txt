@@ -1,0 +1,6 @@
+Hashtable CPU:
+Time to hash:  660.0 ms
+All 26214400 elements found in hash table.
+Hashtable GPU
+Time to hash:  110.7 ms
+All 26214400 elements found in hash table.

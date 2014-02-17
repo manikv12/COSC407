@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <omp.h>
 
-#define ARR_SIZE 10000
+#define ARR_SIZE 100000
 #define NUM_THR 32
 
 void countsort();

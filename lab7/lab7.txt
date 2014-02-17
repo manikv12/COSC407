@@ -1,0 +1,9 @@
+The objective of the lab is to provide a simpler method to see through walls. The original method was suggested in http://www.gpucomputing.net/?q=node/2612.
+
+Leaving aside the physics part, the core calculation is to compute the global minimum of a function u. Assume you are given points y=u(x) where x belongs to a two-dimensional grid.
+
+    Write a serial code to compute the minimum by scanning.
+    Write a CUDA code to compute the minimum.
+
+Submit both codes with a text file explaining how you selected the grid and block sizes to achieve the maximum speedup.
+

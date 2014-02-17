@@ -1,0 +1,5 @@
+Part A: compile and run the following code in the lab (add the necessary includes to make it work), Then capture your answers in the text file and submit it in a file named partA.txt
+
+Part B: Download the code from https://developer.nvidia.com/content/cuda-example-introduction-general-purpose-gpu-programming-0
+
+implement the code appendix_a\hashtable_cpu.cu and appendix_a\hashtable_gpu.cu. Time both codes. Submit your explanation for the timing results in a file named partB.txt

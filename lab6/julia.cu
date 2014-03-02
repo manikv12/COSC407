@@ -1,3 +1,10 @@
+/*
+Attribution to http://rosettacode.org/wiki/Bitmap/Write_a_PPM_file
+for help with writing to a .ppm file, and to 
+https://github.com/smithbower/julia for help with the algorithm for the julia set.
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -5,7 +12,7 @@
 #include <cuda_runtime.h>
 #define WIDTH 2000
 #define HEIGHT 2000
-#define NEWTON_IT 250
+#define NEWTON_IT 100
 #define ZOOM 2.2f
 #define EPSILON 0.01f
 double f(double z);
@@ -83,7 +90,7 @@ __host__ void gpu_julia_setup()
     int *gpu_device_matrix;
     int *gpu_matrix = (int*)malloc(sizeof(int) * WIDTH * HEIGHT);
     cudaMalloc((void **)&gpu_device_matrix, sizeof(int) * HEIGHT * WIDTH);
-    gpu_julia<<<256,256>>>(gpu_device_matrix, HEIGHT, WIDTH, NEWTON_IT, EPSILON, ZOOM);
+    gpu_julia<<<(WIDTH*HEIGHT/128),128>>>(gpu_device_matrix, HEIGHT, WIDTH, NEWTON_IT, EPSILON, ZOOM);
     cudaThreadSynchronize();
     cudaMemcpy(gpu_matrix, gpu_device_matrix, (sizeof(int) * HEIGHT * WIDTH), cudaMemcpyDeviceToHost); 
     //cpu_julia(gpu_matrix);

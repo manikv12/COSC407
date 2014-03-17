@@ -27,7 +27,7 @@ int main()
         cudaMalloc((void **) &devPoints, sizeof(point)*(n*n));
         hx = h(xa, xb, n);
         hy = h(ya, yb, n);
-        printf("\n%f, %f\n", hx, hy);
+        printf("\n\n%f, %f\n", hx, hy);
         f2<<<n,n>>>(hx, hy, xa, xb, devPoints);
         cudaThreadSynchronize();
         cudaMemcpy(Points, devPoints, sizeof(point)*(n*n), cudaMemcpyDeviceToHost);

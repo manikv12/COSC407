@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 double f(double x, double y);
 double h(double a, double b, int n);
 int main()

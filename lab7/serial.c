@@ -34,9 +34,10 @@ int main()
             yb = my+hy;
         }
     }
-    double minx = (xa + xb)/(double)2;
-    double miny = (ya + yb)/(double)2;
-    printf("xa: %f\nxb: %f\nya: %f\nyb: %f\nGlobal min: x = %f, y = %f\n", xa, xb, ya, yb, minx, miny);
+    double minx = (xa + xb)/2.0f;
+    double miny = (ya + yb)/2.0f;
+    //printf("xa: %f\nxb: %f\nya: %f\nyb: %f\n", xa, xb, ya, yb);
+    printf("CPU global min: x = %f, y = %f, f = %f\n", minx, miny,f(minx,miny));
     return 0;
 }
 

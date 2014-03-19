@@ -4,6 +4,7 @@
 #include <cuda_runtime.h>
 float h(float a, float b, int n);
 __device__ float f_dev(float x, float y);
+float f(float x, float y);
 
 typedef struct{
     float val;
@@ -11,7 +12,7 @@ typedef struct{
     float y;
 } point;
 
-__global__ void f2(float hx, float hy, float xa, float ya, point *memBlock);
+__global__ void f2(float hx, float hy, float xa, float ya, point *memBlock, int points);
 point *findMin(point *Points, int size);
 
 int main()
@@ -19,50 +20,53 @@ int main()
     int n = 100;
     float eps = 0.000001;
     float hx, hy, xa = -1.0, xb = 1.0, ya = -1.0, yb = 1.0;
-     
     while((h(xa, xb, n) >= eps) || (h(ya, yb, n) >= eps))
     {
-        point *Points = (point*)malloc(sizeof(point)*(n*n));
-        point *devPoints;
-        cudaMalloc((void **) &devPoints, sizeof(point)*(n*n));
+        point* Points = (point*)malloc(sizeof(point)*(n*n));
+        point* devPoints;
+        
+        cudaMalloc(&devPoints, sizeof(point)*(n*n));
+        
         hx = h(xa, xb, n);
         hy = h(ya, yb, n);
-        printf("\n%f, %f\n", hx, hy);
-        f2<<<n,n>>>(hx, hy, xa, xb, devPoints);
+        
+        dim3 threads(1, 1);
+        dim3 block(n, n);
+        f2<<<block, threads>>>(hx, hy, xa, ya, devPoints, (n*n)); 
+        
         cudaThreadSynchronize();
         cudaMemcpy(Points, devPoints, sizeof(point)*(n*n), cudaMemcpyDeviceToHost);
 
-        //int i;
-        //for(i=0;i<(n*n);i++)
-          // printf("%f ,", Points[i].val);
-        //printf("\n");
-        point *Min = findMin(Points, sizeof(point)*(n*n));
+        point* Min = findMin(Points, n*n);
         
-        printf("min val: %f\nminx: %f\nminy: %f\n", Min->val, Min->x, Min->y); 
-        xa = (Min->x-hx);
-        xb = (Min->x+hx);
-        ya = (Min->y-hy);
-        yb = (Min->y+hy);
+        xa = ((Min->x)-hx);
+        xb = ((Min->x)+hx);
+        ya = ((Min->y)-hy);
+        yb = ((Min->y)+hy);
 
         cudaFree(devPoints);
         free(Points);
         free(Min);
     }
-    float minx = (xa + xb)/(float)2;
-    float miny = (ya + yb)/(float)2;
-    printf("\nxa: %f\nxb: %f\nya: %f\nyb: %f\nGlobal min: x = %f, y = %f\n", xa, xb, ya, yb, minx, miny);
+    float minx = (xa + xb)/2.0f;
+    float miny = (ya + yb)/2.0f;
+    //printf("xa: %f\nxb: %f\nya: %f\nyb: %f\n", xa, xb, ya, yb);
+    printf("CUDA global min: x = %f, y = %f, f = %f\n", minx, miny,f(minx,miny));
     return 0;
 }
 
-__global__ void f2(float hx, float hy, float xa, float ya, point *memBlock)
+__global__ void f2(float hx, float hy, float xa, float ya, point* memBlock, int points)
 {
     int idx = (blockDim.x*blockIdx.x)+threadIdx.x;
-    memBlock[idx].val =  f_dev(xa+(hx*blockIdx.x), ya+(hy*threadIdx.x));
-    memBlock[idx].x = xa + (hx*blockIdx.x);
-    memBlock[idx].y = ya + (hy*threadIdx.x);
+    if(idx < (points)) 
+    {
+        memBlock[idx].val = f_dev(xa+(hx*blockIdx.x), ya+(hy*threadIdx.x));
+        memBlock[idx].x = (xa + (hx*blockIdx.x));
+        memBlock[idx].y = (ya + (hy*threadIdx.x));
+    }
 }
 
-point* findMin(point *Points, int size)
+point* findMin(point* Points, int size)
 {
     point *Min = (point *)malloc(sizeof(point));
     Min->val = Points[0].val;
@@ -71,9 +75,8 @@ point* findMin(point *Points, int size)
     int i;
     for(i = 1;i < size;i++)
     {
-        if(Points[i].val < Min->val)
+        if((Points[i].val) < (Min->val))
         {
-            //printf("min val temp: %f\n", Points[i].val);
             Min->val = Points[i].val;
             Min->x = Points[i].x;
             Min->y = Points[i].y;
@@ -82,9 +85,14 @@ point* findMin(point *Points, int size)
     return Min;
 }
 
+float f(float x, float y)
+{
+    return(x*x*(4-2.1*x*x+(x*x*x*x)/3)+x*y+y*y*(-4+4*y*y));
+}
+
 float h(float a, float b, int n)
 {
-    return (b-a)/n;
+    return ((b-a)/(float)n);
 }
 __device__ float f_dev(float x, float y)
 {

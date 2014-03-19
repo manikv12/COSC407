@@ -1,0 +1,4 @@
+In my testing (using the linux command 'time' to measure runtime,
+I found that using an nxn grid with 1 thread per block was the most
+efficient. This makes sense, as one thread can perform an operation
+at each index, and this means no wasted threads in allocation.

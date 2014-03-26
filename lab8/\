@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <cuda.h>
+#include <time.h>
+#define RAND_MAX 1
+int main()
+{
+    srand(time(0));
+    int N = 10;
+    int *matrix[N][N];
+    int i,j;
+    for(i=0;i<N;i++)
+    {
+        for(j=0;j<N;j++)
+        {
+            printf("%d\n", rand());
+            //matrix[i][j] = rand();
+        }
+    }
+
+    return 0;
+}
